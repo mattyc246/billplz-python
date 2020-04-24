@@ -24,6 +24,46 @@ class Billplz():
         else:
             self.base_url = self.__get_live_endpoint()
 
+    def create_bill_with_redirect(self, email, name, amount, description, callback_url, redirect_url, collection_id=None):
+        """
+        Method for creating a bill with a redirect_url on successful payment
+
+        :param collection_id: Default will use client defined collection_id
+        :param email: Required email address of the bill recepient
+        :param name: Required name of the bill recepient
+        :param amount: Required amount in cents i.e 100 = RM1.00
+        :param callback_url: URL Endpoint to call on successful payment
+        :param redirect_url: URL Endpoint to redirect user to upon successful or unsuccesful payment
+        :param description: Bill description max 200chars, will be displayed on bill
+
+        Returns success_status and redirect_url to bill as a Tuple
+        """
+
+        if not collection_id:
+            collection_id = self.collection_id
+
+        try:
+            params = {
+                'collection_id': self.collection_id,
+                'email': email,
+                'name': name,
+                'amount': amount,
+                'callback_url': callback_url,
+                'redirect_url': redirect_url,
+                'description': description
+            }
+
+            response = requests.post(
+                f'{self.base_url}/v3/bills',
+                params=params,
+                auth=self.__generate_authorization_headers()
+            )
+
+            return (True, response.json()['url'])
+
+        except:
+            return (False, None)
+
     def get_collection(self, collection_id=None):
         """
         Get A Collection
