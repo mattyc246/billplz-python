@@ -65,43 +65,64 @@ class Billplz():
         except:
             return (False, None)
 
-        def create_bill_without_redirect(self, email, name, amount, description, callback_url, collection_id=None):
-        """
-        Method for creating a bill with a redirect_url on successful payment
+    def create_bill_without_redirect(self, email, name, amount, description, callback_url, collection_id=None):
+    """
+    Method for creating a bill with a redirect_url on successful payment
 
-        :param collection_id: Default will use client defined collection_id
-        :param email: Required email address of the bill recepient
-        :param name: Required name of the bill recepient
-        :param amount: Required amount in cents i.e 100 = RM1.00
-        :param callback_url: URL Endpoint to call on successful payment
-        :param description: Bill description max 200chars, will be displayed on bill
+    :param collection_id: Default will use client defined collection_id
+    :param email: Required email address of the bill recepient
+    :param name: Required name of the bill recepient
+    :param amount: Required amount in cents i.e 100 = RM1.00
+    :param callback_url: URL Endpoint to call on successful payment
+    :param description: Bill description max 200chars, will be displayed on bill
 
-        Returns success_status and redirect_url to bill as a Tuple
-        """
+    Returns success_status and redirect_url to bill as a Tuple
+    """
 
-        if not collection_id:
-            collection_id = self.collection_id
+    if not collection_id:
+        collection_id = self.collection_id
 
-        try:
-            params = {
-                'collection_id': self.collection_id,
-                'email': email,
-                'name': name,
-                'amount': amount,
-                'callback_url': callback_url,
-                'description': description
-            }
+    try:
+        params = {
+            'collection_id': self.collection_id,
+            'email': email,
+            'name': name,
+            'amount': amount,
+            'callback_url': callback_url,
+            'description': description
+        }
 
-            response = requests.post(
-                f'{self.base_url}/v3/bills',
-                params=params,
-                auth=self.__generate_authorization_headers()
-            )
+        response = requests.post(
+            f'{self.base_url}/v3/bills',
+            params=params,
+            auth=self.__generate_authorization_headers()
+        )
 
-            return (True, response.json()['url'])
+        return (True, response.json()['url'])
 
-        except:
-            return (False, None)
+    except:
+        return (False, None)
+
+    def get_bill_status(self, bill_id):
+    """
+    Get the bill status
+
+    :param bill_id: Existing Bill ID
+
+    Returns tuple with success_status and dictionary of bill information
+    """
+    if not bill_id:
+        return (False, None)
+
+    try:
+        response = requests.get(
+            f'{self.base_url}/v3/bills/{bill_id}',
+            auth=self.__generate_authorization_headers()
+        )
+
+        return (True, response.json())
+    except:
+        return (False, None)
 
     def get_collection(self, collection_id=None):
         """
