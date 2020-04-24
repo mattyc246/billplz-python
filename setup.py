@@ -8,7 +8,7 @@ setup(
   author = 'Matthew Cross',
   author_email = 'mattyc246@gmail.com',
   url = 'https://github.com/mattyc246/billplz-python',
-  download_url = '',
+  download_url='https://github.com/mattyc246/billplz-python/archive/1.0.0.tar.gz',
   keywords = ['billplz', 'payment', 'payment gateway'],
   include_package_data = False,
   classifiers=[

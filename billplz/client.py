@@ -71,77 +71,77 @@ class Billplz():
             )
 
     def create_bill_without_redirect(self, email, name, amount, description, callback_url, collection_id=None):
-    """
-    Method for creating a bill with a redirect_url on successful payment
+        """
+        Method for creating a bill with a redirect_url on successful payment
 
-    :param collection_id: Default will use client defined collection_id
-    :param email: Required email address of the bill recepient
-    :param name: Required name of the bill recepient
-    :param amount: Required amount in cents i.e 100 = RM1.00
-    :param callback_url: URL Endpoint to call on successful payment
-    :param description: Bill description max 200chars, will be displayed on bill
+        :param collection_id: Default will use client defined collection_id
+        :param email: Required email address of the bill recepient
+        :param name: Required name of the bill recepient
+        :param amount: Required amount in cents i.e 100 = RM1.00
+        :param callback_url: URL Endpoint to call on successful payment
+        :param description: Bill description max 200chars, will be displayed on bill
 
-    Returns success_status and redirect_url to bill as a Dictionary
-    """
+        Returns success_status and redirect_url to bill as a Dictionary
+        """
 
-    if not collection_id:
-        collection_id = self.collection_id
+        if not collection_id:
+            collection_id = self.collection_id
 
-    try:
-        params = {
-            'collection_id': self.collection_id,
-            'email': email,
-            'name': name,
-            'amount': amount,
-            'callback_url': callback_url,
-            'description': description
-        }
+        try:
+            params = {
+                'collection_id': self.collection_id,
+                'email': email,
+                'name': name,
+                'amount': amount,
+                'callback_url': callback_url,
+                'description': description
+            }
 
-        response = requests.post(
-            f'{self.base_url}/v3/bills',
-            params=params,
-            auth=self.__generate_authorization_headers()
-        )
+            response = requests.post(
+                f'{self.base_url}/v3/bills',
+                params=params,
+                auth=self.__generate_authorization_headers()
+            )
 
-        return dict(
-            is_success=True,
-            redirect_url=response.json()['url']
-        )
+            return dict(
+                is_success=True,
+                redirect_url=response.json()['url']
+            )
 
-    except:
-        return dict(
-            is_success=False
-        )
+        except:
+            return dict(
+                is_success=False
+            )
 
     def get_bill_status(self, bill_id):
-    """
-    Get the bill status
+        """
+        Get the bill status
 
-    :param bill_id: Existing Bill ID
+        :param bill_id: Existing Bill ID
 
-    Returns tuple with success_status and dictionary of bill information
-    """
-    if not bill_id:
-        return dict(
-            is_success=False,
-            reason='No Bill ID'
-        )
+        Returns tuple with success_status and dictionary of bill information
+        """
+        if not bill_id:
+            return dict(
+                is_success=False,
+                reason='No Bill ID'
+            )
 
-    try:
-        response = requests.get(
-            f'{self.base_url}/v3/bills/{bill_id}',
-            auth=self.__generate_authorization_headers()
-        )
+        try:
+            response = requests.get(
+                f'{self.base_url}/v3/bills/{bill_id}',
+                auth=self.__generate_authorization_headers()
+            )
 
-        return dict(
-            is_success=True,
-            bill=response.json()
-        )
-    except:
-        return dict(
-            is_success=False,
-            reason='Client Error: Invalic Bill ID or API Key'
-        )
+            return dict(
+                is_success=True,
+                bill=response.json()
+            )
+        except:
+            return dict(
+                is_success=False,
+                reason='Client Error: Invalic Bill ID or API Key'
+            )
 
     def get_collection(self, collection_id=None):
         """
