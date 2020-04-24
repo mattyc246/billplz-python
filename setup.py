@@ -10,7 +10,7 @@ setup(
   url = 'https://github.com/mattyc246/billplz-python',
   download_url = '',
   keywords = ['billplz', 'payment', 'payment gateway'],
-  include_package_data = True,
+  include_package_data = False,
   classifiers=[
     'Development Status :: 3 - Alpha',
     'Intended Audience :: Developers',
