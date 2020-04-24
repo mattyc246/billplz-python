@@ -1,3 +1,4 @@
+import requests
 
 class Billplz():
     """
@@ -6,7 +7,7 @@ class Billplz():
     Base class for interfacing Billplz API with convenience methods
     """
 
-    def init_client(self, api_key, collection_id, test=False):
+    def __init__(self, api_key, collection_id, test=False):
         """
         Initialize an instance of the Billplz Client
 
@@ -23,10 +24,45 @@ class Billplz():
         else:
             self.base_url = self.__get_live_endpoint()
 
-        return self
+    def get_collection(self, collection_id=None):
+        """
+        Get A Collection
+
+        :param collection_id: Provide a collection_id to return or it will use default collection_id
+
+        Returns tuple (success_status, data)
+        """
+        if not collection_id:
+            collection_id = self.collection_id
+
+        try:
+            response = requests.get(
+                f'{self.base_url}/v4/collections/{collection_id}',
+                auth=self.__generate_authorization_headers()
+            )
+
+            data = response.json()
+
+            return (True, data)
+
+        except:
+            return (False, None)
+
+    def __generate_authorization_headers(self):
+        """
+        Returns preset authorization headers
+        """
+        auth_key = requests.auth.HTTPBasicAuth(self.api_key, ':')
+        return auth_key
 
     def __get_sandbox_endpoint(self):
-        return "https://www.billplz-sandbox.com/api/"
+        """
+        Returns the sandbox API base URL
+        """
+        return "https://www.billplz-sandbox.com/api"
 
     def __get_live_endpoint(self):
-        return "https://www.billplz.com/api/"
+        """
+        Returns the live API base URL
+        """
+        return "https://www.billplz.com/api"
