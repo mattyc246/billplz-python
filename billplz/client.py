@@ -37,7 +37,7 @@ class Billplz():
         :param redirect_url: URL Endpoint to redirect user to upon successful or unsuccesful payment
         :param description: Bill description max 200chars, will be displayed on bill
 
-        Returns success_status and redirect_url to bill as a Tuple
+        Returns success_status and redirect_url to bill as a Dictionary
         """
 
         if not collection_id:
@@ -60,10 +60,15 @@ class Billplz():
                 auth=self.__generate_authorization_headers()
             )
 
-            return (True, response.json()['url'])
+            return dict(
+                is_success=True,
+                redirect_url=response.json()['url']
+            )
 
         except:
-            return (False, None)
+            return dict(
+                is_success=False
+            )
 
     def create_bill_without_redirect(self, email, name, amount, description, callback_url, collection_id=None):
     """
@@ -76,7 +81,7 @@ class Billplz():
     :param callback_url: URL Endpoint to call on successful payment
     :param description: Bill description max 200chars, will be displayed on bill
 
-    Returns success_status and redirect_url to bill as a Tuple
+    Returns success_status and redirect_url to bill as a Dictionary
     """
 
     if not collection_id:
@@ -98,10 +103,15 @@ class Billplz():
             auth=self.__generate_authorization_headers()
         )
 
-        return (True, response.json()['url'])
+        return dict(
+            is_success=True,
+            redirect_url=response.json()['url']
+        )
 
     except:
-        return (False, None)
+        return dict(
+            is_success=False
+        )
 
     def get_bill_status(self, bill_id):
     """
@@ -112,7 +122,10 @@ class Billplz():
     Returns tuple with success_status and dictionary of bill information
     """
     if not bill_id:
-        return (False, None)
+        return dict(
+            is_success=False,
+            reason='No Bill ID'
+        )
 
     try:
         response = requests.get(
@@ -120,9 +133,15 @@ class Billplz():
             auth=self.__generate_authorization_headers()
         )
 
-        return (True, response.json())
+        return dict(
+            is_success=True,
+            bill=response.json()
+        )
     except:
-        return (False, None)
+        return dict(
+            is_success=False,
+            reason='Client Error: Invalic Bill ID or API Key'
+        )
 
     def get_collection(self, collection_id=None):
         """
@@ -130,7 +149,7 @@ class Billplz():
 
         :param collection_id: Provide a collection_id to return or it will use default collection_id
 
-        Returns tuple (success_status, data)
+        Returns dictionary of success_status and collection data
         """
         if not collection_id:
             collection_id = self.collection_id
@@ -143,10 +162,15 @@ class Billplz():
 
             data = response.json()
 
-            return (True, data)
+            return dict(
+                is_success=True,
+                collection=data
+            )
 
         except:
-            return (False, None)
+            return dict(
+                is_success=False,
+                reason='Client Error: Invalid Collection ID or API Key')
 
     def __generate_authorization_headers(self):
         """
