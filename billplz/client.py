@@ -45,7 +45,7 @@ class Billplz():
 
         try:
             params = {
-                'collection_id': self.collection_id,
+                'collection_id': collection_id,
                 'email': email,
                 'name': name,
                 'amount': amount,
@@ -89,7 +89,7 @@ class Billplz():
 
         try:
             params = {
-                'collection_id': self.collection_id,
+                'collection_id': collection_id,
                 'email': email,
                 'name': name,
                 'amount': amount,
